@@ -1,0 +1,3239 @@
+You are an expert Principal Software Architect, Full-Stack Developer, Python Backend Engineer, React Engineer, AI/ML Engineer, Data Engineer, RAG Engineer, Database Engineer, DevOps Engineer, Cloud Engineer, Cybersecurity Engineer, QA Engineer and UI/UX Designer.
+
+Your task is to BUILD a complete production-ready web application called:
+
+EDUCONNECT AI – INTELLIGENT OPPORTUNITY, CAREER & GUIDANCE PLATFORM
+
+============================================================
+                    EDUCONNECT AI
+============================================================
+
+Tagline:
+
+"One Platform. Every Opportunity. Smarter Guidance."
+
+============================================================
+1. CORE PROJECT IDEA
+============================================================
+
+Build a real-world AI-powered web platform that helps:
+
+• Students
+• College students
+• Fresh graduates
+• Job seekers
+• Working professionals
+• Competitive exam aspirants
+• Engineering students
+• Law students
+• Other learners
+
+discover and understand:
+
+• Government jobs
+• Private jobs
+• Internships
+• Apprenticeships
+• Scholarships
+• Fellowships
+• Government schemes
+• Competitive exams
+• UPSC exams
+• SSC exams
+• Banking exams
+• Railway exams
+• Defence exams
+• State government exams
+• Entrance exams
+• Research opportunities
+• Hackathons
+• Competitions
+• Skill-development programs
+• Career paths
+• Education opportunities
+• Legal information
+• Career guidance
+• Interview preparation
+• Resume guidance
+
+The platform must also contain an AI chatbot that users can ask questions about:
+
+• Jobs
+• Internships
+• Scholarships
+• Exams
+• Career guidance
+• Education
+• Skills
+• Opportunities
+• Eligibility
+• Application procedures
+• General legal information
+• Law-related educational topics
+
+The platform should aggregate current information from reliable external sources and display the information in a structured, searchable, personalized interface.
+
+============================================================
+2. MOST IMPORTANT REQUIREMENT
+============================================================
+
+THIS MUST BE A REAL WORKING APPLICATION.
+
+Do NOT build:
+
+• static pages
+• fake buttons
+• fake API responses
+• hardcoded opportunity lists
+• fake chatbot responses
+• fake application status
+• fake government notifications
+
+Every major button and feature must actually work.
+
+If a feature is not implemented yet, clearly mark it as "Coming Soon" rather than pretending that it works.
+
+The application must be developed incrementally and tested after each major phase.
+
+============================================================
+3. REAL-TIME DATA REQUIREMENT
+============================================================
+
+The platform must automatically fetch and update opportunity information from multiple permitted external sources.
+
+The data refresh requirement is:
+
+RUN DATA INGESTION TWICE EVERY DAY.
+
+Preferred schedule:
+
+1. Morning refresh
+2. Evening refresh
+
+Use the timezone:
+
+Asia/Kolkata
+
+For example:
+
+Morning:
+06:00 AM IST
+
+Evening:
+06:00 PM IST
+
+The exact scheduler configuration should be implemented using Replit Scheduled Deployment.
+
+IMPORTANT:
+
+Do NOT implement an infinite while-loop inside the web server.
+
+Do NOT depend on someone opening the website for data refresh.
+
+Do NOT depend on the browser remaining open.
+
+The ingestion system must run independently as a scheduled background process.
+
+Architecture:
+
+                    REPLIT
+                      │
+        ┌─────────────┴─────────────┐
+        │                           │
+        ▼                           ▼
+ WEB APPLICATION              SCHEDULED JOB
+ React + FastAPI              Data Ingestion
+        │                           │
+        │                    Runs 2 times/day
+        │                           │
+        │                           ▼
+        │                     External Sources
+        │                           │
+        │                           ▼
+        │                     Fetch New Data
+        │                           │
+        │                           ▼
+        │                     Parse / Clean
+        │                           │
+        │                           ▼
+        │                     Validate
+        │                           │
+        │                           ▼
+        │                     Deduplicate
+        │                           │
+        │                           ▼
+        └──────────────────── PostgreSQL
+                                    │
+                                    ▼
+                               Search Index
+                                    │
+                                    ▼
+                              AI / RAG
+                                    │
+                                    ▼
+                                  Users
+
+============================================================
+4. DATA SOURCES
+============================================================
+
+Create a modular source connector architecture.
+
+The system should support different source adapters.
+
+Potential categories:
+
+GOVERNMENT:
+
+• UPSC
+• SSC
+• IBPS
+• SBI Careers
+• RBI
+• NTA
+• UGC
+• AICTE
+• National Career Service
+• Apprenticeship portals
+• Government recruitment portals
+• State government recruitment portals
+• Official exam portals
+• Official scholarship portals
+• Official government scheme portals
+
+EDUCATION:
+
+• Universities
+• Colleges
+• Research organizations
+• Official education portals
+
+PRIVATE:
+
+• Company career pages
+• Permitted job APIs
+• Permitted internship APIs
+• Public RSS feeds
+• Other legally permitted sources
+
+LEGAL:
+
+• Government legal portals
+• Official legislation sources
+• Official court/government publications
+• Official regulatory sources
+
+IMPORTANT LEGAL/TECHNICAL RULE:
+
+Do not bypass:
+
+• CAPTCHA
+• Authentication
+• Paywalls
+• robots restrictions
+• access controls
+• anti-bot protections
+
+Do not illegally scrape websites.
+
+Prefer:
+
+• official APIs
+• RSS feeds
+• public feeds
+• structured public pages
+• official downloadable notifications
+• permitted public data
+
+Respect:
+
+• terms of service
+• copyright
+• rate limits
+• robots.txt
+• applicable laws
+
+Do not copy entire copyrighted pages.
+
+Store summaries/structured metadata and link users to the original official source.
+
+============================================================
+5. SOURCE ADAPTER ARCHITECTURE
+============================================================
+
+Create:
+
+backend/
+    ingestion/
+        sources/
+            upsc.py
+            ssc.py
+            ibps.py
+            sbi.py
+            rbi.py
+            nta.py
+            ugc.py
+            aicte.py
+            ncs.py
+            scholarships.py
+            internships.py
+            state_jobs.py
+            private_jobs.py
+            legal_sources.py
+
+Each connector must implement a common interface:
+
+fetch()
+parse()
+normalize()
+validate()
+deduplicate()
+save()
+
+Create a common BaseSourceAdapter.
+
+Example conceptual interface:
+
+class BaseSourceAdapter:
+
+    async def fetch():
+        pass
+
+    def parse():
+        pass
+
+    def normalize():
+        pass
+
+    def validate():
+        pass
+
+    def deduplicate():
+        pass
+
+    async def save():
+        pass
+
+Do not put all scraping logic in one file.
+
+============================================================
+6. INGESTION PIPELINE
+============================================================
+
+The ingestion pipeline must be:
+
+SOURCE
+   ↓
+FETCH
+   ↓
+RAW RESPONSE
+   ↓
+PARSE
+   ↓
+NORMALIZE
+   ↓
+VALIDATE
+   ↓
+DEDUPLICATE
+   ↓
+STORE
+   ↓
+INDEX
+   ↓
+UPDATE RECOMMENDATIONS
+   ↓
+NOTIFY USERS
+
+Every ingestion run must create a log.
+
+Store:
+
+• source_name
+• started_at
+• completed_at
+• status
+• records_found
+• records_inserted
+• records_updated
+• records_skipped
+• records_failed
+• error_message
+• duration
+
+Possible status:
+
+SUCCESS
+PARTIAL_SUCCESS
+FAILED
+
+If one source fails:
+
+DO NOT stop the entire ingestion process.
+
+Example:
+
+UPSC failed
+SSC successful
+IBPS successful
+Scholarships successful
+
+The successful sources must still update the database.
+
+============================================================
+7. TWICE DAILY REFRESH
+============================================================
+
+Create a dedicated script:
+
+backend/ingestion/run_ingestion.py
+
+It must:
+
+1. Load all enabled sources
+2. Fetch each source
+3. Parse records
+4. Normalize records
+5. Validate records
+6. Deduplicate
+7. Insert/update PostgreSQL
+8. Update search index
+9. Generate embeddings where necessary
+10. Mark expired opportunities
+11. Generate notifications
+12. Write ingestion logs
+13. Exit cleanly
+
+Do NOT keep the scheduled job running forever.
+
+It should start, perform the work, log results, and exit.
+
+Configure Replit Scheduled Deployment for:
+
+Every day at 06:00 AM Asia/Kolkata
+
+Every day at 06:00 PM Asia/Kolkata
+
+If Replit requires UTC scheduling, correctly convert IST to UTC and document the conversion.
+
+Do not assume the schedule is working.
+
+Create a visible admin ingestion dashboard showing:
+
+Last ingestion
+Next ingestion
+Source status
+Records fetched
+Records updated
+Records failed
+
+============================================================
+8. DATA FRESHNESS
+============================================================
+
+Every dynamic record must contain:
+
+created_at
+updated_at
+published_at
+last_verified_at
+expires_at
+
+Display:
+
+"Last verified: 2 Oct 2026"
+
+on opportunity pages.
+
+If data is old:
+
+show:
+
+"Information may be outdated. Please verify the official source."
+
+Do not silently present stale information as current.
+
+============================================================
+9. DATABASE
+============================================================
+
+Use PostgreSQL.
+
+Do NOT use SQLite for production.
+
+Design normalized relational tables.
+
+Required tables:
+
+users
+profiles
+roles
+user_roles
+skills
+user_skills
+
+organizations
+
+opportunity_categories
+opportunities
+opportunity_skills
+opportunity_sources
+opportunity_documents
+
+saved_opportunities
+
+applications
+
+notifications
+notification_preferences
+
+career_paths
+career_skills
+
+legal_topics
+legal_documents
+
+chat_sessions
+chat_messages
+
+knowledge_documents
+document_chunks
+
+source_fetch_logs
+ingestion_jobs
+
+recommendations
+
+audit_logs
+
+============================================================
+10. OPPORTUNITY TABLE
+============================================================
+
+Opportunity should contain at least:
+
+id
+title
+organization_id
+category_id
+description
+
+opportunity_type
+
+qualification
+branch
+experience_required
+age_limit
+
+skills
+
+location
+work_mode
+
+salary
+stipend
+
+application_fee
+
+opening_date
+closing_date
+exam_date
+result_date
+
+eligibility
+
+documents_required
+
+selection_process
+
+application_steps
+
+official_url
+source_url
+source_name
+
+source_type
+
+status
+
+published_at
+last_verified_at
+expires_at
+
+created_at
+updated_at
+
+============================================================
+11. OPPORTUNITY TYPES
+============================================================
+
+Support:
+
+GOVERNMENT_JOB
+PRIVATE_JOB
+INTERNSHIP
+APPRENTICESHIP
+SCHOLARSHIP
+FELLOWSHIP
+EXAM
+ENTRANCE_EXAM
+HACKATHON
+COMPETITION
+RESEARCH
+GOVERNMENT_SCHEME
+SKILL_PROGRAM
+OTHER
+
+============================================================
+12. OPPORTUNITY STATUS
+============================================================
+
+Use:
+
+UPCOMING
+OPEN
+CLOSING_SOON
+CLOSED
+CANCELLED
+RESULT_AVAILABLE
+UPDATED
+
+Automatically calculate status from dates where possible.
+
+============================================================
+13. DUPLICATE DETECTION
+============================================================
+
+The same opportunity may appear on multiple sources.
+
+Implement duplicate detection.
+
+First use deterministic matching:
+
+• official URL
+• notification number
+• organization
+• title
+• application deadline
+
+Then optionally use fuzzy matching.
+
+Never create unnecessary duplicate records.
+
+If duplicate information is detected:
+
+merge/update rather than creating another opportunity.
+
+============================================================
+14. USER AUTHENTICATION
+============================================================
+
+Implement:
+
+Register
+Login
+Logout
+Email verification
+Forgot password
+Reset password
+
+Use secure password hashing.
+
+Never store plaintext passwords.
+
+Use:
+
+JWT access tokens + refresh tokens
+
+OR secure session authentication.
+
+Implement:
+
+• token expiration
+• secure cookies where applicable
+• rate limiting
+• validation
+• account protection
+• RBAC
+
+Roles:
+
+USER
+ADMIN
+SUPER_ADMIN
+
+============================================================
+15. USER PROFILE
+============================================================
+
+Users should create a career profile.
+
+Fields:
+
+name
+email
+education
+degree
+branch
+graduation_year
+skills
+certifications
+experience
+preferred_career
+preferred_industry
+preferred_location
+work_mode
+government_private_preference
+internship_preference
+exam_preferences
+
+Allow users to edit their profile.
+
+Show:
+
+Profile Completion %
+
+Use profile information for personalized recommendations.
+
+============================================================
+16. ELIGIBILITY ENGINE
+============================================================
+
+This is a critical feature.
+
+Implement:
+
+"Check My Eligibility"
+
+For each opportunity compare:
+
+education
+degree
+branch
+experience
+age
+skills
+location
+other eligibility rules
+
+Example:
+
+User:
+BTech CSE
+Fresher
+
+Opportunity:
+BTech/BE eligible
+0-2 years experience
+
+Result:
+
+Likely Eligible
+
+But the system must explain:
+
+"Based on the eligibility information currently stored for this opportunity, your profile appears to meet the listed educational and experience requirements. Verify the official notification before applying."
+
+Never guarantee eligibility.
+
+If clearly incompatible:
+
+"Your profile does not appear to meet the listed qualification requirement."
+
+Provide the reason.
+
+============================================================
+17. SEARCH ENGINE
+============================================================
+
+Create global search.
+
+Support:
+
+keyword search
+filters
+sorting
+pagination
+semantic search
+natural language search
+
+Examples:
+
+"Government jobs for BTech CSE freshers"
+
+"Python internships in Hyderabad"
+
+"Scholarships for engineering students"
+
+"Upcoming banking exams"
+
+"Jobs without experience"
+
+"Law internships"
+
+"UPSC opportunities"
+
+============================================================
+18. NATURAL LANGUAGE SEARCH
+============================================================
+
+Convert natural language into structured filters.
+
+Example:
+
+User:
+
+"Show government jobs for BTech CSE freshers in Telangana closing this month."
+
+Interpret as:
+
+type = GOVERNMENT_JOB
+qualification = BTech
+branch = CSE
+experience = 0
+location = Telangana
+deadline = current_month
+
+Then query PostgreSQL.
+
+Do not rely on the LLM alone.
+
+Use deterministic filtering after extracting intent.
+
+============================================================
+19. SEARCH FILTERS
+============================================================
+
+Include:
+
+Category
+Opportunity type
+Government/private
+Qualification
+Branch
+Experience
+Location
+Work mode
+Salary
+Stipend
+Deadline
+Organization
+Skills
+Exam type
+
+Sort by:
+
+Newest
+Deadline
+Relevance
+Salary/stipend
+
+============================================================
+20. AI CHATBOT
+============================================================
+
+Create:
+
+"EduConnect AI Assistant"
+
+The chatbot must answer:
+
+• Career questions
+• Education questions
+• Internship questions
+• Job questions
+• Scholarship questions
+• Exam questions
+• Opportunity questions
+• Eligibility questions
+• Application questions
+• Skill roadmap questions
+• Interview questions
+• General legal-information questions
+
+Examples:
+
+"What government exams can a BTech CSE graduate apply for?"
+
+"Show me Python internships."
+
+"What scholarships are currently open?"
+
+"What documents are required?"
+
+"Can I apply for this opportunity?"
+
+"What should I learn to become a data scientist?"
+
+"Explain this exam in simple language."
+
+============================================================
+21. AI MUST NOT HALLUCINATE CURRENT OPPORTUNITIES
+============================================================
+
+For current opportunity questions:
+
+DO NOT allow the LLM to invent data.
+
+Use:
+
+User question
+ ↓
+Intent detection
+ ↓
+Database search
+ ↓
+Eligibility filtering
+ ↓
+RAG retrieval
+ ↓
+LLM
+ ↓
+Grounded answer
+ ↓
+Sources
+
+If no verified information is found:
+
+Say:
+
+"I couldn't find a verified current opportunity matching that request. Please try another category or check the official sources."
+
+Do not invent results.
+
+============================================================
+22. RAG
+============================================================
+
+Implement Retrieval-Augmented Generation.
+
+Use:
+
+PostgreSQL
++
+pgvector
+
+Store embeddings for:
+
+opportunities
+career content
+education content
+legal documents
+FAQs
+knowledge documents
+
+Use metadata filtering.
+
+Example:
+
+User:
+
+"What scholarships are open for BTech students?"
+
+Retrieve:
+
+current scholarship records
+eligibility
+deadline
+source
+
+Then generate an answer.
+
+Include citations/source links.
+
+============================================================
+23. AI MODEL ABSTRACTION
+============================================================
+
+Do not hard-code the application to one AI provider.
+
+Create:
+
+LLMProvider
+
+Possible implementations:
+
+GeminiProvider
+OpenAIProvider
+OtherProvider
+
+Use environment variables:
+
+LLM_PROVIDER
+LLM_API_KEY
+LLM_MODEL
+
+Never hardcode API keys.
+
+============================================================
+24. AI CHAT UI
+============================================================
+
+Create a modern chat interface.
+
+Features:
+
+New Chat
+Conversation History
+Suggested Questions
+Streaming Response where supported
+Source Citations
+Opportunity Cards
+Save Opportunity
+View Opportunity
+Apply Officially
+
+Example:
+
+User:
+
+"Find internships for Python and ML."
+
+Assistant:
+
+"I found 8 current opportunities matching your search."
+
+Then show:
+
+--------------------------------
+Python ML Intern
+Organization
+Location
+Stipend
+Deadline
+
+[View Details]
+[Save]
+[Apply Officially]
+--------------------------------
+
+============================================================
+25. OPPORTUNITY DETAIL PAGE
+============================================================
+
+Every opportunity page must contain:
+
+Title
+Organization
+Type
+Description
+
+Eligibility
+Qualification
+Branch
+Experience
+Age limit
+
+Salary/Stipend
+Location
+Work mode
+
+Application fee
+
+Important dates
+
+Documents
+Selection process
+Application steps
+
+Official notification
+Official application link
+
+Source
+Published date
+Last verified date
+
+Buttons:
+
+Save
+Apply Officially
+Share
+Check Eligibility
+Ask AI
+
+============================================================
+26. APPLY BUTTON
+============================================================
+
+The platform should NOT pretend to submit applications unless an actual official integration exists.
+
+"Apply Officially" should open the official application URL.
+
+Show:
+
+"You are being redirected to the official application website."
+
+Track:
+
+application intent
+
+only if the user chooses:
+
+"I applied"
+
+Then application tracker status can become:
+
+APPLIED
+
+============================================================
+27. APPLICATION TRACKER
+============================================================
+
+Users can track:
+
+Saved
+Interested
+Applied
+Shortlisted
+Interview
+Selected
+Rejected
+Completed
+
+Fields:
+
+application_date
+status
+notes
+deadline
+documents
+
+============================================================
+28. SAVED OPPORTUNITIES
+============================================================
+
+Users can bookmark opportunities.
+
+Create:
+
+/saved
+
+Show:
+
+Saved opportunities
+Deadline
+Status
+Organization
+
+Allow:
+
+Remove
+Apply
+Track
+
+============================================================
+29. PERSONALIZED RECOMMENDATIONS
+============================================================
+
+Create recommendation engine.
+
+Pipeline:
+
+User Profile
+ ↓
+Hard Eligibility Filter
+ ↓
+Preference Filter
+ ↓
+Semantic Similarity
+ ↓
+Ranking
+ ↓
+Recommendations
+
+Recommendations should consider:
+
+education
+branch
+skills
+career interest
+location
+experience
+preferences
+deadline
+
+Show:
+
+"Why this is recommended"
+
+Example:
+
+"Recommended because your profile contains BTech CSE, Python and Machine Learning skills."
+
+============================================================
+30. DASHBOARD
+============================================================
+
+After login:
+
+Display:
+
+Welcome
+
+Profile completion
+
+Recommended opportunities
+
+New opportunities
+
+Closing soon
+
+Upcoming exams
+
+Scholarships
+
+Internships
+
+Saved opportunities
+
+Application tracker
+
+Notifications
+
+AI Assistant
+
+Example:
+
+------------------------------------
+Welcome Back
+Build your future with EduConnect AI
+------------------------------------
+
+Profile Completion: 85%
+
+Recommended For You
+
+5 Internships
+3 Government Jobs
+2 Scholarships
+4 Exams
+
+Closing Soon
+
+Upcoming Exams
+
+Latest Updates
+
+AI Career Assistant
+
+------------------------------------
+
+============================================================
+31. NOTIFICATION SYSTEM
+============================================================
+
+Implement:
+
+In-app notifications.
+
+Optional:
+
+Email notifications.
+
+Notifications:
+
+New matching opportunity
+Deadline reminder
+Opportunity update
+Exam update
+Scholarship deadline
+Saved opportunity closing
+
+Example:
+
+"Your saved opportunity closes in 2 days."
+
+Allow users to configure notification preferences.
+
+============================================================
+32. CAREER GUIDANCE
+============================================================
+
+Create career paths.
+
+Examples:
+
+BTech CSE
+ ↓
+Software Developer
+Data Analyst
+Data Scientist
+ML Engineer
+AI Engineer
+Cloud Engineer
+DevOps
+Cybersecurity
+Full Stack Developer
+
+Career pages contain:
+
+Role overview
+Required skills
+Beginner roadmap
+Advanced roadmap
+Projects
+Certifications
+Interview preparation
+Tools
+Related jobs
+Internships
+
+Also support:
+
+Law
+Commerce
+Arts
+Science
+Management
+Finance
+Teaching
+Research
+Design
+Healthcare
+Government careers
+
+============================================================
+33. LEGAL INFORMATION MODULE
+============================================================
+
+Create:
+
+/law
+
+Include:
+
+Legal basics
+Constitution basics
+Acts
+Rules
+Regulations
+Student rights
+Cyber law basics
+Employment law basics
+Education law
+Consumer law
+Intellectual property basics
+
+Use authoritative sources.
+
+Each legal document should have:
+
+Title
+Summary
+Source
+Official URL
+Published date
+Effective date if available
+Last verified date
+
+IMPORTANT:
+
+The platform provides general legal information for educational/informational purposes.
+
+It is NOT a substitute for advice from a qualified lawyer.
+
+Do not fabricate legal provisions.
+
+============================================================
+34. EDUCATION MODULE
+============================================================
+
+Create:
+
+/education
+
+Include:
+
+Courses
+Learning paths
+Skills
+Certifications
+Entrance exams
+Scholarships
+Higher education guidance
+Study resources
+
+============================================================
+35. ADMIN PANEL
+============================================================
+
+Create:
+
+/admin
+
+Admin dashboard:
+
+Users
+Opportunities
+Sources
+Ingestion
+Duplicates
+Notifications
+Chatbot analytics
+System health
+
+Admin can:
+
+Create opportunity
+Edit opportunity
+Delete/archive opportunity
+Approve opportunity
+Reject opportunity
+Verify opportunity
+Manage sources
+Enable/disable source
+View ingestion logs
+View errors
+View system health
+
+============================================================
+36. SOURCE MANAGEMENT
+============================================================
+
+Create source management page.
+
+Fields:
+
+Source name
+Source URL
+Source type
+Adapter
+Enabled
+Fetch frequency
+Last fetch
+Last successful fetch
+Last error
+Records fetched
+
+Statuses:
+
+ACTIVE
+PAUSED
+FAILED
+REQUIRES_REVIEW
+
+============================================================
+37. INGESTION MONITORING
+============================================================
+
+Admin dashboard should show:
+
+Last ingestion:
+
+02 Oct 2026 06:02 AM
+
+Status:
+
+SUCCESS
+
+Sources:
+
+UPSC ✓
+SSC ✓
+IBPS ✓
+Scholarships ✓
+Internships ✓
+
+Records:
+
+Fetched: 243
+Inserted: 71
+Updated: 119
+Skipped: 42
+Failed: 11
+
+Next scheduled run:
+
+02 Oct 2026 06:00 PM
+
+============================================================
+38. DATA QUALITY
+============================================================
+
+Before displaying an opportunity:
+
+Validate:
+
+Title
+Organization
+URL
+Deadline
+Qualification
+Source
+Status
+
+If required information is missing:
+
+mark:
+
+NEEDS_REVIEW
+
+Do not publish unreliable data automatically.
+
+============================================================
+39. FRONTEND TECHNOLOGY
+============================================================
+
+Use:
+
+React
+TypeScript
+Vite
+
+UI:
+
+Tailwind CSS
+shadcn/ui
+
+Libraries:
+
+React Router
+TanStack Query
+React Hook Form
+Zod
+Lucide React
+
+Charts:
+
+Recharts
+
+Do not use unnecessary libraries.
+
+============================================================
+40. FRONTEND DESIGN
+============================================================
+
+The interface must be:
+
+Modern
+Professional
+Clean
+Responsive
+Accessible
+Fast
+Mobile friendly
+
+It must NOT look like a basic college CRUD project.
+
+Use:
+
+cards
+badges
+tabs
+filters
+search
+pagination
+modals
+drawers
+responsive tables
+skeleton loaders
+empty states
+error states
+toast notifications
+
+============================================================
+41. MAIN NAVIGATION
+============================================================
+
+Desktop:
+
+Logo
+Home
+Opportunities
+Jobs
+Internships
+Scholarships
+Exams
+Careers
+Education
+Legal
+AI Assistant
+
+Right:
+
+Notifications
+Profile
+
+Mobile:
+
+Use responsive navigation/bottom navigation/drawer.
+
+============================================================
+42. REQUIRED PAGES
+============================================================
+
+/
+
+Home
+
+/login
+/register
+/forgot-password
+
+/dashboard
+
+/profile
+
+/opportunities
+
+/opportunities/[id]
+
+/jobs
+/internships
+/scholarships
+/exams
+/government-jobs
+/private-jobs
+
+/saved
+
+/applications
+
+/notifications
+
+/chat
+
+/careers
+/careers/[id]
+
+/education
+
+/law
+/law/[id]
+
+/settings
+
+/admin
+/admin/users
+/admin/opportunities
+/admin/sources
+/admin/ingestion
+/admin/duplicates
+/admin/analytics
+
+============================================================
+43. HOMEPAGE
+============================================================
+
+Hero:
+
+"Discover Opportunities. Build Your Future."
+
+Subtitle:
+
+"Jobs, internships, scholarships, exams and career guidance — all in one place."
+
+Search bar:
+
+"Search jobs, internships, scholarships, exams..."
+
+Buttons:
+
+Explore Opportunities
+Ask EduConnect AI
+
+Cards:
+
+Government Jobs
+Private Jobs
+Internships
+Scholarships
+Exams
+Career Guidance
+Legal Information
+
+Sections:
+
+Latest Opportunities
+Closing Soon
+Recommended
+Upcoming Exams
+Scholarships
+Career Paths
+How It Works
+
+============================================================
+44. BACKEND
+============================================================
+
+Use:
+
+Python
+FastAPI
+Pydantic
+SQLAlchemy
+Alembic
+PostgreSQL
+Redis
+
+HTTP:
+
+httpx
+
+Parsing:
+
+BeautifulSoup
+
+Browser automation:
+
+Playwright ONLY where legally/technically appropriate.
+
+Background processing:
+
+Celery or an equivalent worker approach where supported.
+
+Keep architecture modular.
+
+============================================================
+45. BACKEND STRUCTURE
+============================================================
+
+backend/
+
+app/
+    main.py
+
+    core/
+        config.py
+        security.py
+        logging.py
+
+    api/
+        auth.py
+        users.py
+        profiles.py
+        opportunities.py
+        search.py
+        recommendations.py
+        applications.py
+        notifications.py
+        chat.py
+        careers.py
+        education.py
+        legal.py
+        admin.py
+
+    models/
+
+    schemas/
+
+    repositories/
+
+    services/
+
+    ai/
+
+    rag/
+
+    search/
+
+    recommendations/
+
+    notifications/
+
+    ingestion/
+        base.py
+        sources/
+        parsers/
+        normalizers/
+        validators/
+        deduplication/
+        run_ingestion.py
+
+    tasks/
+
+    tests/
+
+============================================================
+46. API
+============================================================
+
+Create versioned REST API:
+
+/api/v1
+
+Authentication:
+
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+
+Profile:
+
+GET /api/v1/profile
+PUT /api/v1/profile
+
+Opportunities:
+
+GET /api/v1/opportunities
+GET /api/v1/opportunities/{id}
+
+Search:
+
+GET /api/v1/search
+
+Recommendations:
+
+GET /api/v1/recommendations
+
+Saved:
+
+POST /api/v1/opportunities/{id}/save
+DELETE /api/v1/opportunities/{id}/save
+
+Applications:
+
+POST /api/v1/applications
+GET /api/v1/applications
+
+Chat:
+
+POST /api/v1/chat
+GET /api/v1/chat/sessions
+GET /api/v1/chat/sessions/{id}
+
+Careers:
+
+GET /api/v1/careers
+GET /api/v1/careers/{id}
+
+Legal:
+
+GET /api/v1/legal/topics
+GET /api/v1/legal/topics/{id}
+
+Notifications:
+
+GET /api/v1/notifications
+
+Admin:
+
+GET /api/v1/admin/sources
+GET /api/v1/admin/ingestion
+GET /api/v1/admin/opportunities
+
+============================================================
+47. API QUALITY
+============================================================
+
+Implement:
+
+pagination
+filtering
+sorting
+validation
+standard errors
+authentication
+authorization
+rate limiting
+
+Standard error:
+
+{
+  "success": false,
+  "error": {
+    "code": "OPPORTUNITY_NOT_FOUND",
+    "message": "Opportunity not found"
+  }
+}
+
+============================================================
+48. DATABASE SEARCH
+============================================================
+
+Use PostgreSQL indexes.
+
+Use:
+
+full-text search
+
+and:
+
+pgvector
+
+for semantic search.
+
+Use hybrid retrieval where appropriate.
+
+============================================================
+49. REDIS
+============================================================
+
+Use Redis for:
+
+caching
+rate limiting
+temporary data
+background task coordination
+
+Do not use Redis as the permanent source of truth.
+
+============================================================
+50. CACHING
+============================================================
+
+Cache:
+
+Popular searches
+Categories
+Frequently viewed opportunities
+Public dashboard data
+
+Invalidate cache after ingestion updates.
+
+============================================================
+51. REAL-TIME UI UPDATES
+============================================================
+
+When new data has been ingested:
+
+The frontend should display updated data on the next request without requiring a redeploy.
+
+Use:
+
+TanStack Query cache invalidation
+
+and optionally:
+
+Server-Sent Events/WebSockets
+
+for:
+
+notifications
+chat streaming
+important live updates
+
+Do not use WebSockets for every database operation unnecessarily.
+
+============================================================
+52. EMAIL
+============================================================
+
+Create email abstraction.
+
+Support:
+
+Resend
+SendGrid
+Amazon SES
+SMTP
+
+Use environment variables.
+
+Emails:
+
+Welcome
+Verification
+Password reset
+Deadline reminder
+Opportunity alerts
+
+============================================================
+53. SECURITY
+============================================================
+
+Implement:
+
+HTTPS
+CORS
+secure headers
+input validation
+SQL injection prevention
+XSS protection
+CSRF protection where applicable
+rate limiting
+secure password hashing
+secure tokens
+RBAC
+audit logs
+
+Never expose:
+
+API keys
+database passwords
+JWT secrets
+
+============================================================
+54. FILE UPLOAD
+============================================================
+
+Optional resume upload:
+
+PDF
+DOCX
+
+Extract:
+
+education
+skills
+experience
+projects
+certifications
+
+Use extracted information to suggest profile updates.
+
+IMPORTANT:
+
+User must review and confirm extracted information.
+
+Do not make important decisions solely from automated resume parsing.
+
+============================================================
+55. ERROR RESILIENCE
+============================================================
+
+The platform must continue working if:
+
+One government website is unavailable
+One source times out
+LLM API fails
+Redis fails
+One ingestion parser fails
+One notification fails
+
+Example:
+
+UPSC source fails
+
+System should log:
+
+UPSC FAILED
+
+but continue:
+
+SSC
+IBPS
+Scholarships
+Internships
+
+Do not crash the entire ingestion process.
+
+============================================================
+56. RETRY POLICY
+============================================================
+
+For temporary source failures:
+
+Use exponential backoff.
+
+Example:
+
+Attempt 1
+wait
+Attempt 2
+wait
+Attempt 3
+
+Then:
+
+mark source as FAILED
+
+Continue other sources.
+
+Do not retry forever.
+
+============================================================
+57. TIMEOUTS
+============================================================
+
+Every external HTTP request must have a timeout.
+
+Never allow:
+
+requests to hang indefinitely.
+
+============================================================
+58. RATE LIMITING
+============================================================
+
+Respect external source limits.
+
+Implement per-source:
+
+timeout
+request delay
+retry limit
+rate limit
+
+Do not send excessive requests.
+
+============================================================
+59. LOGGING
+============================================================
+
+Use structured logging.
+
+Include:
+
+timestamp
+service
+source
+operation
+status
+duration
+error
+
+Do not log:
+
+passwords
+API keys
+tokens
+sensitive user data
+
+============================================================
+60. HEALTH CHECKS
+============================================================
+
+Create:
+
+GET /health
+
+GET /ready
+
+Check:
+
+API
+Database
+Redis
+critical services
+
+============================================================
+61. MONITORING
+============================================================
+
+Admin should see:
+
+API errors
+ingestion failures
+database status
+source status
+worker status
+chatbot errors
+
+============================================================
+62. TESTING
+============================================================
+
+Backend:
+
+pytest
+
+Frontend:
+
+Vitest
+React Testing Library
+
+E2E:
+
+Playwright
+
+Test:
+
+registration
+login
+profile
+search
+filters
+opportunity details
+save
+application tracking
+eligibility
+chat
+RAG
+notifications
+admin
+ingestion
+
+============================================================
+63. DOCKER
+============================================================
+
+Create Docker configuration where appropriate.
+
+Services:
+
+frontend
+backend
+worker
+postgres
+redis
+
+Use environment variables.
+
+============================================================
+64. REPLIT DEPLOYMENT
+============================================================
+
+The application must be designed specifically for Replit deployment.
+
+Use Replit Secrets for:
+
+DATABASE_URL
+REDIS_URL
+LLM_API_KEY
+LLM_PROVIDER
+LLM_MODEL
+JWT_SECRET
+JWT_REFRESH_SECRET
+EMAIL_API_KEY
+other credentials
+
+Never put secrets directly in source code.
+
+The production application and scheduled ingestion must be treated as separate runtime concerns.
+
+============================================================
+65. REPLIT SCHEDULED DEPLOYMENT
+============================================================
+
+Create:
+
+scheduled_ingestion.py
+
+or:
+
+backend/ingestion/run_ingestion.py
+
+The scheduled deployment should execute:
+
+python backend/ingestion/run_ingestion.py
+
+The process must:
+
+• fetch sources
+• update database
+• update embeddings
+• mark expired records
+• create notifications
+• log result
+• exit
+
+Schedule:
+
+06:00 AM IST
+06:00 PM IST
+
+Every day.
+
+Use Asia/Kolkata timezone if supported.
+
+If Replit scheduling requires UTC:
+
+06:00 AM IST = 00:30 UTC
+06:00 PM IST = 12:30 UTC
+
+Configure correctly.
+
+Document this clearly in:
+
+docs/scheduling.md
+
+============================================================
+66. IMPORTANT SCHEDULER REQUIREMENT
+============================================================
+
+Do NOT use:
+
+while True:
+    sleep(...)
+
+for production scheduling.
+
+Do not rely on the web server process staying alive.
+
+Use Replit Scheduled Deployment for the twice-daily ingestion task.
+
+============================================================
+67. INGESTION RUN SAFETY
+============================================================
+
+Prevent overlapping ingestion runs.
+
+Use:
+
+database lock
+or
+distributed lock
+
+If a previous run is still active:
+
+do not start another copy.
+
+============================================================
+68. INGESTION IDEMPOTENCY
+============================================================
+
+Running the ingestion twice must NOT create duplicate records.
+
+Use:
+
+unique constraints
+source IDs
+official URLs
+notification IDs
+content hashes
+
+============================================================
+69. DATA CHANGE DETECTION
+============================================================
+
+If an existing opportunity changes:
+
+detect the change.
+
+Examples:
+
+deadline changed
+eligibility changed
+salary changed
+application URL changed
+notification updated
+
+Mark:
+
+updated_at
+
+and optionally notify users who saved the opportunity.
+
+============================================================
+70. EXPIRED DATA
+============================================================
+
+Automatically mark expired opportunities.
+
+For example:
+
+closing_date < current date
+
+→ CLOSED
+
+Do not delete immediately.
+
+Keep historical records.
+
+============================================================
+71. SOURCE TRANSPARENCY
+============================================================
+
+Every opportunity must display:
+
+Source
+Official source
+Published date
+Last verified date
+Official notification
+Official application link
+
+Example:
+
+Source:
+Official UPSC
+
+Last verified:
+2 October 2026
+
+[View Official Notification]
+
+[Apply on Official Website]
+
+============================================================
+72. NO GOVERNMENT IMPERSONATION
+============================================================
+
+EduConnect AI is an independent information platform.
+
+Never make the UI appear to be:
+
+UPSC
+SSC
+Government of India
+SBI
+RBI
+Any government agency
+
+Clearly state:
+
+"EduConnect AI is an independent information and guidance platform. Always verify information on the official source before applying."
+
+============================================================
+73. LEGAL SAFETY
+============================================================
+
+For legal information:
+
+Use general educational information.
+
+Do not present the chatbot as a lawyer.
+
+Do not provide guaranteed legal outcomes.
+
+Do not fabricate laws.
+
+Always provide source information.
+
+============================================================
+74. ACCESSIBILITY
+============================================================
+
+Follow WCAG principles.
+
+Implement:
+
+keyboard navigation
+ARIA labels
+focus states
+screen reader support
+sufficient contrast
+responsive layout
+accessible forms
+
+============================================================
+75. MOBILE RESPONSIVENESS
+============================================================
+
+The website must work properly on:
+
+mobile
+tablet
+desktop
+
+Test common viewport sizes.
+
+============================================================
+76. PERFORMANCE
+============================================================
+
+Use:
+
+pagination
+lazy loading
+caching
+database indexes
+connection pooling
+background processing
+optimized queries
+
+Do not load all opportunities at once.
+
+============================================================
+77. PROJECT STRUCTURE
+============================================================
+
+Use a clean structure:
+
+educonnect-ai/
+
+frontend/
+backend/
+docs/
+tests/
+scripts/
+
+docker-compose.yml
+
+.env.example
+.gitignore
+README.md
+
+============================================================
+78. FRONTEND STRUCTURE
+============================================================
+
+frontend/
+
+src/
+
+components/
+pages/
+layouts/
+hooks/
+services/
+api/
+store/
+types/
+utils/
+
+============================================================
+79. BACKEND STRUCTURE
+============================================================
+
+backend/
+
+app/
+
+api/
+auth/
+models/
+schemas/
+repositories/
+services/
+ai/
+rag/
+search/
+recommendations/
+notifications/
+ingestion/
+tasks/
+core/
+tests/
+
+============================================================
+80. DOCUMENTATION
+============================================================
+
+Create:
+
+README.md
+
+docs/
+
+architecture.md
+database.md
+api.md
+ingestion.md
+sources.md
+ai-rag.md
+security.md
+deployment.md
+scheduling.md
+testing.md
+troubleshooting.md
+
+============================================================
+81. API DOCUMENTATION
+============================================================
+
+FastAPI should automatically expose:
+
+/docs
+
+/redoc
+
+Document endpoints properly.
+
+============================================================
+82. DEVELOPMENT PHASES
+============================================================
+
+DO NOT attempt to create the entire application blindly in one step.
+
+Implement in phases.
+
+PHASE 1:
+
+Project setup
+React
+FastAPI
+PostgreSQL
+Environment variables
+
+PHASE 2:
+
+Database schema
+Migrations
+
+PHASE 3:
+
+Authentication
+
+PHASE 4:
+
+User profile
+
+PHASE 5:
+
+Opportunity CRUD
+Search
+Filtering
+Pagination
+
+PHASE 6:
+
+Frontend dashboard
+Opportunity pages
+Saved opportunities
+
+PHASE 7:
+
+Application tracker
+
+PHASE 8:
+
+Source ingestion framework
+
+PHASE 9:
+
+Government source adapters
+
+PHASE 10:
+
+Twice-daily scheduled ingestion
+
+PHASE 11:
+
+Data validation
+Deduplication
+Freshness
+
+PHASE 12:
+
+Admin panel
+
+PHASE 13:
+
+AI chatbot
+
+PHASE 14:
+
+RAG
+pgvector
+Citations
+
+PHASE 15:
+
+Eligibility engine
+
+PHASE 16:
+
+Recommendation engine
+
+PHASE 17:
+
+Notifications
+
+PHASE 18:
+
+Career guidance
+
+PHASE 19:
+
+Legal information
+
+PHASE 20:
+
+Testing
+
+PHASE 21:
+
+Security hardening
+
+PHASE 22:
+
+Production deployment
+
+PHASE 23:
+
+Final end-to-end testing
+
+============================================================
+83. PROTOTYPE / USER FLOW
+============================================================
+
+Implement this exact primary user flow:
+
+                 USER
+                   │
+                   ▼
+              LANDING PAGE
+                   │
+          ┌────────┴─────────┐
+          │                  │
+       Register             Login
+          │                  │
+          └────────┬─────────┘
+                   ▼
+              USER PROFILE
+                   │
+                   ▼
+              DASHBOARD
+                   │
+       ┌───────────┼────────────┐
+       │           │            │
+       ▼           ▼            ▼
+     JOBS      INTERNSHIPS  SCHOLARSHIPS
+       │           │            │
+       └───────────┼────────────┘
+                   │
+                   ▼
+                SEARCH
+                   │
+                   ▼
+              FILTER RESULTS
+                   │
+                   ▼
+            OPPORTUNITY PAGE
+                   │
+        ┌──────────┼──────────┐
+        │          │          │
+        ▼          ▼          ▼
+       SAVE      CHECK      APPLY
+                 ELIGIBILITY
+                    │
+                    ▼
+                AI ASSISTANT
+                    │
+                    ▼
+             APPLICATION TRACKER
+                    │
+                    ▼
+                NOTIFICATIONS
+
+============================================================
+84. AI FLOW
+============================================================
+
+                 USER QUESTION
+                       │
+                       ▼
+                INTENT DETECTION
+                       │
+                       ▼
+              QUERY UNDERSTANDING
+                       │
+                       ▼
+        ┌──────────────┼───────────────┐
+        │              │               │
+        ▼              ▼               ▼
+   PostgreSQL      pgvector        Profile Data
+        │              │               │
+        └──────────────┼───────────────┘
+                       ▼
+                   RETRIEVER
+                       │
+                       ▼
+                CONTEXT BUILDER
+                       │
+                       ▼
+                     LLM
+                       │
+                       ▼
+             GROUNDED RESPONSE
+                       │
+                       ▼
+                 SOURCES/CITATIONS
+
+============================================================
+85. DATA FLOW
+============================================================
+
+External Websites
+       │
+       ▼
+Source Adapters
+       │
+       ▼
+Fetch
+       │
+       ▼
+Parse
+       │
+       ▼
+Normalize
+       │
+       ▼
+Validate
+       │
+       ▼
+Deduplicate
+       │
+       ▼
+PostgreSQL
+       │
+       ├───────────────┐
+       ▼               ▼
+Full Text          pgvector
+Search             Embeddings
+       │               │
+       └───────┬───────┘
+               ▼
+           Search API
+               │
+               ▼
+          React Frontend
+               │
+               ▼
+              User
+
+============================================================
+86. ADMIN FLOW
+============================================================
+
+Admin Login
+     ↓
+Admin Dashboard
+     ↓
+Source Monitoring
+     ↓
+Ingestion Status
+     ↓
+Data Quality
+     ↓
+Duplicate Review
+     ↓
+Opportunity Management
+     ↓
+User Management
+     ↓
+Analytics
+     ↓
+System Health
+
+============================================================
+87. HOME PAGE DESIGN
+============================================================
+
+Create a polished UI.
+
+Header:
+
+EduConnect AI logo
+
+Home
+Opportunities
+Jobs
+Internships
+Scholarships
+Exams
+Careers
+Legal
+AI Assistant
+
+Hero:
+
+"Discover Opportunities.
+Build Your Future."
+
+Search:
+
+"Search jobs, internships, scholarships, exams..."
+
+Buttons:
+
+Explore Opportunities
+Ask EduConnect AI
+
+Opportunity cards:
+
+Government Jobs
+Private Jobs
+Internships
+Scholarships
+Exams
+Career Guidance
+
+Sections:
+
+Latest Opportunities
+
+Closing Soon
+
+Recommended For You
+
+Upcoming Exams
+
+Scholarships
+
+Career Paths
+
+How EduConnect AI Works
+
+Trusted Sources
+
+============================================================
+88. DASHBOARD PROTOTYPE
+============================================================
+
+Create:
+
+┌──────────────────────────────────────────┐
+│ Good Morning                             │
+│ Find your next opportunity               │
+├──────────────────────────────────────────┤
+│ Profile Completion: 85%                   │
+├──────────────────────────────────────────┤
+│ Recommended For You                      │
+│                                          │
+│ Internship   Government Job   Scholarship│
+├──────────────────────────────────────────┤
+│ Closing Soon                              │
+├──────────────────────────────────────────┤
+│ Upcoming Exams                            │
+├──────────────────────────────────────────┤
+│ Latest Opportunities                     │
+├──────────────────────────────────────────┤
+│ Application Tracker                      │
+├──────────────────────────────────────────┤
+│ Ask EduConnect AI                           │
+└──────────────────────────────────────────┘
+
+============================================================
+89. OPPORTUNITY CARD
+============================================================
+
+Each card:
+
+Opportunity title
+
+Organization
+
+Category
+
+Location
+
+Qualification
+
+Deadline
+
+Status
+
+Last verified
+
+Buttons:
+
+View Details
+Save
+Apply
+
+============================================================
+90. CHATBOT CARD INTEGRATION
+============================================================
+
+When chatbot retrieves opportunities:
+
+Do NOT display only text.
+
+Display interactive opportunity cards.
+
+Example:
+
+"Here are 5 internships matching your profile."
+
+[Opportunity Card]
+
+View
+Save
+Apply Officially
+
+============================================================
+91. ADMIN ANALYTICS
+============================================================
+
+Display:
+
+Total users
+Active users
+Total opportunities
+New opportunities today
+Closing soon
+Applications tracked
+Saved opportunities
+Chatbot questions
+Ingestion success rate
+Source failures
+
+Charts:
+
+Opportunities by category
+Opportunities by source
+New opportunities over time
+
+============================================================
+92. PRODUCTION DATABASE SAFETY
+============================================================
+
+Use migrations.
+
+Do not modify production schema manually without migration.
+
+Use Alembic.
+
+Provide:
+
+alembic upgrade head
+
+============================================================
+93. SECRETS
+============================================================
+
+Create:
+
+.env.example
+
+Include:
+
+DATABASE_URL=
+REDIS_URL=
+
+JWT_SECRET=
+JWT_REFRESH_SECRET=
+
+LLM_PROVIDER=
+LLM_API_KEY=
+LLM_MODEL=
+
+EMAIL_PROVIDER=
+EMAIL_API_KEY=
+
+Do not commit .env.
+
+Use Replit Secrets in deployment.
+
+============================================================
+94. FINAL TESTING
+============================================================
+
+Before saying:
+
+"PROJECT COMPLETE"
+
+perform an end-to-end test.
+
+Test:
+
+1. Register
+2. Login
+3. Complete profile
+4. Search opportunity
+5. Filter opportunity
+6. Open details
+7. Check eligibility
+8. Save
+9. Mark applied
+10. Ask AI
+11. Receive grounded answer
+12. View source
+13. Search scholarship
+14. Search internship
+15. Search exam
+16. Open career guidance
+17. Open legal information
+18. Admin login
+19. Run ingestion manually
+20. Verify database update
+21. Verify deduplication
+22. Verify expired opportunity handling
+23. Verify notification
+24. Verify scheduled ingestion configuration
+25. Test mobile layout
+26. Test API failure
+27. Test source failure
+28. Test AI failure
+29. Test database error handling
+30. Test production build
+
+============================================================
+95. NO FALSE CLAIMS
+============================================================
+
+Never tell me:
+
+"Real-time data is working"
+
+unless you have actually implemented and tested the data pipeline.
+
+Never tell me:
+
+"AI is working"
+
+unless the configured provider is connected and tested.
+
+Never tell me:
+
+"Scheduled ingestion is working"
+
+unless the scheduled job has been configured and its command tested.
+
+Never tell me:
+
+"Production ready"
+
+until the application passes the defined tests.
+
+============================================================
+96. REPLIT AGENT BEHAVIOR
+============================================================
+
+You are responsible for writing the actual application.
+
+Do not merely provide suggestions.
+
+Do not stop after creating a plan.
+
+After planning, begin implementation.
+
+For every phase:
+
+1. Explain what you are implementing.
+2. Create the required files.
+3. Write complete code.
+4. Install required packages.
+5. Configure environment variables.
+6. Run the application.
+7. Test it.
+8. Fix errors.
+9. Verify functionality.
+10. Continue to the next phase.
+
+If an error occurs:
+
+DO NOT ignore it.
+
+Diagnose the root cause.
+
+Fix it.
+
+Run the relevant test again.
+
+============================================================
+97. REPLIT-SPECIFIC REQUIREMENT
+============================================================
+
+Use Replit-native capabilities where they simplify the project.
+
+Use:
+
+Replit Secrets
+Replit PostgreSQL where appropriate
+Replit Deployments
+Replit Scheduled Deployments
+Replit logs/monitoring
+
+Do not unnecessarily introduce AWS infrastructure during the initial Replit build.
+
+The goal is:
+
+BUILD → TEST → DEPLOY → VERIFY
+
+inside Replit first.
+
+The architecture should remain portable so that it can later be moved to AWS if required.
+
+============================================================
+98. INITIAL IMPLEMENTATION ORDER
+============================================================
+
+START NOW.
+
+First:
+
+A. Inspect the Replit environment.
+
+B. Create project structure.
+
+C. Create frontend.
+
+D. Create FastAPI backend.
+
+E. Connect PostgreSQL.
+
+F. Create database models and migrations.
+
+G. Implement authentication.
+
+H. Implement profile.
+
+I. Implement opportunity model.
+
+J. Implement opportunity API.
+
+K. Implement frontend dashboard.
+
+L. Implement search and filters.
+
+M. Implement saved opportunities.
+
+N. Implement application tracker.
+
+Then:
+
+O. Build ingestion framework.
+
+P. Implement permitted source connectors.
+
+Q. Implement twice-daily ingestion.
+
+R. Implement admin panel.
+
+S. Implement AI.
+
+T. Implement RAG.
+
+U. Implement eligibility.
+
+V. Implement recommendations.
+
+W. Implement notifications.
+
+X. Test everything.
+
+Y. Deploy.
+
+============================================================
+99. FINAL PRODUCT REQUIREMENT
+============================================================
+
+The final EduConnect AI platform should provide this experience:
+
+User opens website
+        ↓
+Creates account
+        ↓
+Completes profile
+        ↓
+Gets personalized dashboard
+        ↓
+Sees current opportunities
+        ↓
+Searches naturally
+        ↓
+Filters opportunities
+        ↓
+Checks eligibility
+        ↓
+Reads verified information
+        ↓
+Visits official application website
+        ↓
+Tracks application
+        ↓
+Receives reminders
+        ↓
+Asks AI questions
+        ↓
+Gets grounded answers with sources
+        ↓
+Returns daily to discover new opportunities
+
+The platform should become a daily-use opportunity discovery and guidance system.
+
+============================================================
+100. FINAL COMMAND
+============================================================
+
+Build the complete working application.
+
+Do not give me only code snippets.
+
+Do not give me only architecture.
+
+Do not create a static prototype.
+
+Create the actual integrated application.
+
+Start with Phase 1 and continue sequentially.
+
+At the end of every phase:
+
+• run tests
+• verify the feature
+• fix errors
+• explain what was completed
+• identify the next phase
+
+The final application name is:
+
+EDUCONNECT AI
+
+Tagline:
+
+"One Platform. Every Opportunity. Smarter Guida

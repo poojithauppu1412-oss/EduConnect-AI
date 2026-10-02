@@ -1,0 +1,15 @@
+[project]
+name = "educonnect-ai"
+version = "0.1.0"
+description = "EduConnect AI FastAPI backend"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.20.0",
+    "fastapi>=0.142.2",
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.3.6",
+    "pydantic-settings>=2.15.0",
+    "pyjwt[crypto]>=2.15.1",
+    "sqlalchemy>=2.1.2",
+    "uvicorn[standard]>=0.54.0",
+]
