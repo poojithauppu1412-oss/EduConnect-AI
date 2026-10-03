@@ -1,4 +1,7 @@
 import { useEffect, useRef } from "react";
+import OpportunityDetailPage from "./OpportunityDetailPage";
+import OpportunitiesPage from "./OpportunitiesPage";
+import ProfilePage from "./ProfilePage";
 import { ClerkProvider, Show, SignIn, SignUp, useClerk, useUser } from "@clerk/react";
 import { publishableKeyFromHost } from "@clerk/react/internal";
 import { shadcn } from "@clerk/themes";
@@ -235,9 +238,9 @@ function HomePage() {
           <div className="horizon-copy">
             <span className="horizon-rule" aria-hidden="true" />
             <p>
-              Create an account now. Opportunity discovery, personalized
-              recommendations, and guidance are being built in later phases;
-              they are not presented as active features yet.
+              Create an account to build your profile and browse verified
+              opportunities when source-reviewed listings are available.
+              Recommendations and guided assistance are still in development.
             </p>
           </div>
         </section>
@@ -245,7 +248,7 @@ function HomePage() {
 
       <footer className="site-footer">
         <p>EduConnect AI · A thoughtful starting place for what’s next.</p>
-        <span className="footer-stage">Phase 3 · Account access</span>
+        <span className="footer-stage">Phase 6 · Opportunity discovery</span>
       </footer>
     </div>
   );
@@ -254,7 +257,7 @@ function HomePage() {
 function HomeRedirect() {
   return (
     <>
-      <Show when="signed-in"><Redirect to="/account" /></Show>
+      <Show when="signed-in"><Redirect to="/dashboard" /></Show>
       <Show when="signed-out"><HomePage /></Show>
     </>
   );
@@ -281,8 +284,8 @@ function AccountPage() {
         <p className="eyebrow">Your EduConnect account</p>
         <h1>Welcome{user?.firstName ? `, ${user.firstName}` : ""}.</h1>
         <p className="account-intro">
-          Your account is active. New opportunity and guidance features will
-          appear here as they are completed and verified.
+          Your account is active. Browse source-reviewed opportunities or update
+          your profile to keep your preferences current.
         </p>
         <section className="account-card" aria-labelledby="account-status-title">
           <div className="account-card-heading">
@@ -312,6 +315,12 @@ function AccountPage() {
             </p>
           </div>
         </section>
+        <Link className="primary-link account-profile-link" href="/dashboard">
+          Browse opportunities <ArrowUpRight size={15} aria-hidden="true" />
+        </Link>
+        <Link className="primary-link account-profile-link" href="/profile">
+          View or edit your profile <ArrowUpRight size={15} aria-hidden="true" />
+        </Link>
         <Link className="text-link account-home-link" href="/">Return to home <ArrowUpRight size={15} aria-hidden="true" /></Link>
       </main>
     </div>
@@ -396,6 +405,18 @@ function ClerkProviderWithRoutes() {
         <Route path="/account">
           <Show when="signed-in"><AccountPage /></Show>
           <Show when="signed-out"><Redirect to="/" /></Show>
+        </Route>
+        <Route path="/dashboard">
+          <Show when="signed-in"><OpportunitiesPage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+        <Route path="/opportunities/:id">
+          <Show when="signed-in"><OpportunityDetailPage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
+        </Route>
+        <Route path="/profile">
+          <Show when="signed-in"><ProfilePage /></Show>
+          <Show when="signed-out"><Redirect to="/sign-in" /></Show>
         </Route>
         <Route><Redirect to="/" /></Route>
       </Switch>

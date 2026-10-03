@@ -3,6 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.auth import router as auth_router
 from backend.app.api.health import router as health_router
+from backend.app.api.opportunities import (
+    admin_router as admin_opportunities_router,
+    public_router as opportunities_router,
+    search_router,
+)
+from backend.app.api.profile import router as profile_router
 from backend.app.core.config import settings
 
 app = FastAPI(
@@ -21,6 +27,10 @@ app.add_middleware(
 
 app.include_router(health_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
+app.include_router(profile_router, prefix="/api/v1")
+app.include_router(opportunities_router, prefix="/api/v1")
+app.include_router(search_router, prefix="/api/v1")
+app.include_router(admin_opportunities_router, prefix="/api/v1")
 
 
 @app.get("/", include_in_schema=False)

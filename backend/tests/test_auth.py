@@ -43,6 +43,10 @@ class ClerkAuthenticationTests(unittest.TestCase):
         response = self.client.get("/api/auth/me")
         self.assertEqual(response.status_code, 401)
 
+    def test_profile_endpoint_rejects_requests_without_session_cookie(self) -> None:
+        response = self.client.get("/api/v1/profile")
+        self.assertEqual(response.status_code, 401)
+
     def test_auth_endpoint_accepts_a_valid_signed_session(self) -> None:
         token = self.make_token(azp=settings.allowed_origins[0])
         with patch(

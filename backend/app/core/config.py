@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     database_url: SecretStr
     cors_origins: str = "http://localhost:5000"
     clerk_publishable_key: SecretStr | None = None
+    clerk_secret_key: SecretStr | None = None
     replit_dev_domain: str | None = None
     replit_domains: str | None = None
 
